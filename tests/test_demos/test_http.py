@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from demos.http.app import create_app
+from demos.http.http_app import create_app
 
 
 @pytest.fixture
@@ -14,6 +14,7 @@ def app():
 def test_config(app):
     assert app.config['ENV'] == 'development'
     assert os.getenv("PASSWORD") == '123456'
+    print(app.name)
 
 
 def test_hello(client):
