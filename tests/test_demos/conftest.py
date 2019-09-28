@@ -1,4 +1,9 @@
+import sys
+from pathlib import Path
+
 import pytest
+
+sys.path.append(str(Path(__file__).parents[2]))  # 将项目根目录加入搜索路径
 
 
 @pytest.fixture
@@ -16,6 +21,7 @@ def req_ctx(app):
 @pytest.fixture
 def client(app):
     return app.test_client()
+
 
 @pytest.fixture
 def runner(app):
