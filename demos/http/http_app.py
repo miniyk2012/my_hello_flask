@@ -154,6 +154,23 @@ body: Don't forget the party!
         response.set_cookie('name', name)
         return response
 
+    @app.route('/login')
+    def login():
+        session['logged_in'] = True
+        return redirect(url_for('hello'))
+
+    @app.route('/admin')
+    def admin():
+        if 'logged_in' in session:
+            return 'Welcome to admin page.'
+        abort(403)
+
+    @app.route('/logout')
+    def logout():
+        if 'logged_in' in session:
+            session.pop('logged_in')
+        return redirect(url_for('hello'))
+
     return app
 
 

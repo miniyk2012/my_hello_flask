@@ -12,11 +12,16 @@ def app():
     return app
 
 
+@pytest.fixture(scope='class')
+def session_client(app):
+    return app.test_client()
+
+
 class TestHttp:
 
     def test_config(self, app):
         assert app.config['ENV'] == 'development'
-        assert os.getenv("PASSWORD") == '123456'
+        assert os.getenv("SECRET_KEY") == '123456'
         # print(app.name)
 
     def test_url_map(self, app):
@@ -56,3 +61,23 @@ class TestHttp:
 
         response = client.get('/')
         assert response.data == '<h1>Hello, {0}!</h1>[Not Authenticated]'.format('yangkai').encode()
+
+
+class TestSession:
+
+    @pytest.fixture
+    def login(self, session_client):
+        session_client.get('/login')
+
+    @pytest.fixture
+    def logout(self, session_client):
+        session_client.get('/logout')
+
+    def test_admin_403(self, logout, session_client):
+        response = session_client.get('/admin')
+        assert response.status_code == 403
+
+    def test_admin_success(self, logout, login, session_client):
+        response = session_client.get('/admin')
+        assert response.status_code == 200
+        assert response.data == 'Welcome to admin page.'.encode()
