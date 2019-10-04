@@ -1,2 +1,56 @@
+{% extends 'base.html' %}
+
+
+{% from 'macros.html' import qux, customized, static_file with context %}
+
+{% block styles %}
+    {{ super() }}
+    {{ static_file('css', 'css/bootstrap.min.css') }}
+{% endblock styles %}
+
+{% block scripts %}
+    {{ static_file('js', 'https://code.jquery.com/jquery-3.4.1.min.js', local=False) }}
+    {{ static_file('js', 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js', local=False) }}
+    {{ static_file('js', 'js/bootstrap.min.js') }}
+{% endblock scripts %}
+
+{% block head %}
+    <style>
+        :root {
+            --alert-color: {{ alert_color }}
+        }
+    </style>
+    {{ super() }}
+
+{% endblock head %}
+
+{% block content %}
+<p>before block content super()</p>
+{{ super() }}
+{% set name='baz' %}
 <h1>Template</h1>
-<li><a href="{{ url_for('watchlist') }}">Watchlist</a></li>
+
+<ul>
+    <li>Macro: {{ qux(4) }}</li>
+    <li>Macro customized: {{ customized(7) }}</li>
+    <li>Set var: {% if name == 'baz' %} I am baz. {% endif %}</li>
+    <li>Test: {% if name is baz %} I am baz. {% endif %}</li>
+    <li>Global: {{ bar() }}</li>
+    <li><a href="{{ url_for('watchlist') }}">Watchlist</a></li>
+    <li><a href="{{ url_for('watchlist_with_static') }}">Watchlist2</a></li>
+    <li>{{ foo }}</li>
+    <li>{{ request.args.getlist('name') }}</li>
+    <li>{{ dict(a='b', b='b') }}</li>
+    <li>{{ lipsum(n=2, min=20, max=30) }}</li>
+    {% for i in range(10) %}
+    <li> fibonacci({{ i }})={{ fibonacci(i) }}</li>
+    {% endfor %}
+    {% filter upper%}
+    <li>yangkai</li>
+    {% endfilter %}
+    <li>{{ undefined_var|default('陌生人')|title }}</li>
+    <li> {{ name|musical }}</li>
+    <li> {{ name|laugh(10) }}</li>
+    <li><a href="{{ url_for('just_flash') }}">Flash something</a></li>
+</ul>
+{% endblock %}

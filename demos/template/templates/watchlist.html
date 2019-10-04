@@ -5,8 +5,10 @@
     <title>{{ user.username }}</title>
 </head>
 <body>
+    {% include '_banners.html' %}
     <a href="{{url_for('index')}}">&larr; Return</a>
     <h2>{{ user.username }}</h2>
+    <p>{{ foo }}</p>
     {% if user.bio %}
         <i>{{ user.bio }}</i>
     {% else %}
@@ -19,5 +21,8 @@
             <li>{{ movie.name }} - {{ movie.year }}</li>
         {% endfor %}
     </ul>
+    {{ p_value }}
+    {{ p_value|safe }}
+    {{ markup_text }}
 </body>
 </html>
