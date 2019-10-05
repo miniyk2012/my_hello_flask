@@ -15,3 +15,5 @@ def test_fabonaci():
     assert fibonacci(4) == 5
     assert fibonacci(5) == 8
     assert fibonacci(6) == 13
+
+
