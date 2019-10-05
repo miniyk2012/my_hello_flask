@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, request, flash, redirect, url_for
 
 
 def index():
@@ -6,6 +6,10 @@ def index():
 
 
 def html():
+    if request.method == "POST":
+        username = request.form.get('username')
+        flash("Welcome, {}".format(username))
+        return redirect(url_for("index"))
     return render_template('pure_html.html')
 
 
