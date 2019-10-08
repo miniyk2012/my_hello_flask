@@ -1,5 +1,10 @@
+import pathlib
+import sys
+
+sys.path.append(str(pathlib.Path(__file__).parents[2] / pathlib.Path('demos') / pathlib.Path('form')))  # 将form目录加入搜索路径
+
 import pytest
-from flask_wtf import FlaskForm, csrf
+from flask_wtf import FlaskForm
 from loguru import logger
 from wtforms import Form, BooleanField, StringField, validators, PasswordField, SubmitField
 
@@ -25,6 +30,7 @@ def test_index(client):
 
 def test_config(app):
     assert app.secret_key == "12345"
+    assert app.root_path == "/Users/thomas_young/Documents/projects/my_hello_flask/demos/form"
 
 
 class TestWTForms:
@@ -80,4 +86,3 @@ class TestFlaskWTF(TestWTForms):
     def expect_data(self, form):
         logger.info(form.data)
         assert form.data == {'username': None, 'password': None, 'remember': True, 'submit': False, 'csrf_token': None}
-
