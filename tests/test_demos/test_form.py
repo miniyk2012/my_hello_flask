@@ -33,6 +33,7 @@ def test_config(app):
     assert app.secret_key == "12345"
     assert app.root_path == "/Users/thomas_young/Documents/projects/my_hello_flask/demos/form"
     assert app.config["WTF_CSRF_ENABLED"]  # 本文件中后续用例要求设置CSRF生效
+    assert not app.config["WTF_I18N_ENABLED"]
 
 
 class TestWTForms:
@@ -63,22 +64,25 @@ class TestWTForms:
 
             self.expect_data(form)
 
-            logger.info(form.remember())
-            logger.info(form.remember.label())
-
-            logger.info(form.submit())
-            logger.info(form.submit.label())
+            # logger.info(form.remember())
+            # logger.info(form.remember.label())
+            #
+            # logger.info(form.submit())
+            # logger.info(form.submit.label())
 
             assert form.username(style="width: 200px;") \
                    == '''<input id="username" name="username" placeholder="Your name" required style="width: 200px;" type="text" value="">'''
 
     def test_form_validator(self, app, _login_form_clz):
         with self.build_form(app, _login_form_clz, username='', password='123') as form:
+            assert form.password.data == "123"
             assert not form.validate()
             logger.info(form.errors)
             assert form.errors["password"] == ['Field must be between 8 and 128 characters long.']
 
         with self.build_form(app, _login_form_clz, username='杨恺', password='12345678') as form:
+            assert form.password.data == "12345678"
+            assert form.username.data == "杨恺"
             self.validate_csrf_token(form)
 
     def validate_csrf_token(self, form):
@@ -104,5 +108,6 @@ class TestFlaskWTF(TestWTForms):
         assert form.data == {'username': None, 'password': None, 'remember': True, 'submit': False, 'csrf_token': None}
 
     def validate_csrf_token(self, form):
+        assert form.csrf_token.data is None
         assert not form.validate()
         assert form.errors['csrf_token'] == ['The CSRF token is missing.']

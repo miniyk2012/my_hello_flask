@@ -14,10 +14,20 @@
         <div class="form-group">
             {{ form.username.label }}
             {{ form.username(class="form-control") }}
+            {% if form.username.errors %}
+                {% for message in form.username.errors %}
+                <small class="error">{{ message }}</small><br>
+                {% endfor %}
+            {% endif %}
         </div>
         <div class="form-group">
             {{ form.password.label }}
             {{ form.password(class="form-control") }}
+            {% if form.password.errors %}
+                {% for message in form.password.errors %}
+                <small class="error">{{ message }}</small><br>
+                {% endfor %}
+            {% endif %}
         </div>
         <div class="form-check">
             {{ form.remember(class="form-check-input") }}

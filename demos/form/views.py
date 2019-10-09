@@ -36,8 +36,20 @@ def do_work(s1, s2):
 def basic():
     form = LoginForm()
     logger.info(form.data)
+    if form.validate_on_submit():
+        username = form.username.data
+        flash(f"Welcome, {username}")
+        return redirect(url_for("index"))
     return render_template("basic.html", form=form)
 
+
+def bootstrap():
+    form = LoginForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        flash('Welcome home, %s!' % username)
+        return redirect(url_for('index'))
+    return render_template('bootstrap.html', form=form)
 
 rules = [
     {'rule': '/', 'view_func': index, 'methods': ['GET', 'POST']},
@@ -45,6 +57,7 @@ rules = [
     {'rule': '/do-work', 'view_func': use_services(Service1, Service2)(do_work), 'methods': ['GET', 'POST'],
      "endpoint": "do_work"},
     {'rule': '/basic', 'view_func': basic, 'methods': ['GET', 'POST']},
+    {'rule': '/bootstrap', 'view_func': bootstrap, 'methods': ['GET', 'POST']},
 ]
 
 

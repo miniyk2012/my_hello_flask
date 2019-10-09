@@ -10,7 +10,7 @@ def _config_log():
 
 
 def _inject_variables():
-    return dict(alert_color="red")
+    return dict(alert_color="purple")
 
 
 def config_jinja(app):
