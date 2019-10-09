@@ -1,5 +1,7 @@
 from flask import render_template, request, flash, redirect, url_for
+from loguru import logger
 
+from forms import LoginForm
 from utils import use_services
 
 
@@ -31,11 +33,18 @@ def do_work(s1, s2):
     return s1.work() + s2.work()
 
 
+def basic():
+    form = LoginForm()
+    logger.info(form.data)
+    return render_template("basic.html", form=form)
+
+
 rules = [
     {'rule': '/', 'view_func': index, 'methods': ['GET', 'POST']},
     {'rule': '/html', 'view_func': html, 'methods': ['GET', 'POST']},
     {'rule': '/do-work', 'view_func': use_services(Service1, Service2)(do_work), 'methods': ['GET', 'POST'],
      "endpoint": "do_work"},
+    {'rule': '/basic', 'view_func': basic, 'methods': ['GET', 'POST']},
 ]
 
 
