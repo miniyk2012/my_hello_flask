@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 {% endblock %}
 
+{% from 'macros.html' import form_field %}
+
 {% block content %}
 <div class="container">
     <h1 class="display-4">Baisc Form</h1>
@@ -12,22 +14,10 @@
     <form method="post">
         {{ form.csrf_token }}
         <div class="form-group">
-            {{ form.username.label }}
-            {{ form.username(class="form-control") }}
-            {% if form.username.errors %}
-                {% for message in form.username.errors %}
-                <small class="error">{{ message }}</small><br>
-                {% endfor %}
-            {% endif %}
+            {{ form_field(form.username, class="form-control") }}
         </div>
         <div class="form-group">
-            {{ form.password.label }}
-            {{ form.password(class="form-control") }}
-            {% if form.password.errors %}
-                {% for message in form.password.errors %}
-                <small class="error">{{ message }}</small><br>
-                {% endfor %}
-            {% endif %}
+            {{ form_field(form.password, class="form-control") }}
         </div>
         <div class="form-check">
             {{ form.remember(class="form-check-input") }}

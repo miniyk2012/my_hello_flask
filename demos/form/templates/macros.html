@@ -10,3 +10,15 @@
         <link rel="icon" href="{{ filename_or_url }}">
     {%- endif %}
 {% endmacro %}
+
+{% macro form_field(field) %}
+    {{ field.label }}
+    {# https://stackoverflow.com/questions/13944751/args-kwargs-in-jinja2-macros,
+        kwargs用来接收关键字参数, 但不允许在宏入口参数处声明 #}
+    {{ field(**kwargs) }}
+    {% if field.errors -%}
+        {% for error in field.errors -%}
+            <small class="error">{{ error }}</small>
+        {%- endfor %}
+    {%- endif %}
+{% endmacro %}
