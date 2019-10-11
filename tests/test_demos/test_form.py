@@ -6,6 +6,7 @@ sys.path.append(str(pathlib.Path(__file__).parents[2] / pathlib.Path('demos') / 
 
 import pytest
 from flask_wtf import FlaskForm
+from flask import current_app
 from loguru import logger
 from wtforms import Form, BooleanField, StringField, validators, PasswordField, SubmitField
 
@@ -34,6 +35,9 @@ def test_config(app):
     assert app.root_path == "/Users/thomas_young/Documents/projects/my_hello_flask/demos/form"
     assert app.config["WTF_CSRF_ENABLED"]  # 本文件中后续用例要求设置CSRF生效
     assert not app.config["WTF_I18N_ENABLED"]
+    assert app.root_path == "/Users/thomas_young/Documents/projects/my_hello_flask/demos/form"
+    with app.app_context():
+        assert current_app.root_path == app.root_path
 
 
 class TestWTForms:

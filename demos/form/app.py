@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from loguru import logger
 
@@ -16,6 +18,7 @@ def _inject_variables():
 def config_jinja(app):
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True
+    app.config['UPLOAD_PATH'] = os.path.join(app.root_path, "uploads")
 
 
 def create_app():

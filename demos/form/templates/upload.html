@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block metas %}
+    {{ super() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% endblock %}
+
+{% from 'macros.html' import form_field %}
+
+{% block content %}
+<div class="container">
+    <h1 class="display-4">Upload Form</h1>
+    <hr>
+    <form method="post" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            {{ form_field(form.photo, class="form-control-file") }}
+        </div>
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+    {% include 'pictures.html' %}
+</div>
+{% endblock %}

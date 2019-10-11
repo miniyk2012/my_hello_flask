@@ -1,0 +1,6 @@
+{% for filename in filenames %}
+    <a href="{{ url_for('get_file', filename=filename) }}" target="_blank">
+        <img src="{{ url_for('get_file', filename=filename) }}" width="200px">
+    </a>
+{% endfor %}
+
