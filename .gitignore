@@ -3,3 +3,4 @@ venv
 .idea
 **/logs
 **/uploads
+demos/form/static/ckeditor

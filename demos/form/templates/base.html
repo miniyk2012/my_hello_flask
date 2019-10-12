@@ -6,18 +6,18 @@
     {% block head %}
         {% block metas %}
             <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         {% endblock %}
         <title>{% block title %}Template - HelloFlask{% endblock %}</title>
         <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-        {% block styles %}
-            <style>
-                :root {
-                    --alert-color: {{ alert_color }}
-                }
-            </style>
-            {{ static_file('css', 'css/bootstrap.min.css') }}
-            <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-        {% endblock %}
+        <style>
+        :root {
+                --alert-color: {{ alert_color }}
+            }
+        </style>
+        {% block styles %}{% endblock %}
+        {{ static_file('css', 'css/bootstrap.min.css') }}
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     {% endblock %}
 </head>
 <body>

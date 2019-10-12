@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_ckeditor import CKEditor
 from loguru import logger
 
 import config
@@ -15,18 +16,24 @@ def _inject_variables():
     return dict(alert_color="purple")
 
 
-def config_jinja(app):
+def _config_jinja(app):
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True
     app.config['UPLOAD_PATH'] = os.path.join(app.root_path, "uploads")
 
 
+def _init_plugins(app):
+    CKEditor(app)
+
+
 def create_app():
     _config_log()
     app = Flask(__name__)
+    
     app.config.from_object(config)
     app.context_processor(_inject_variables)
-
+    
+    _init_plugins(app)
     add_routes(app)
-    config_jinja(app)
+    _config_jinja(app)
     return app

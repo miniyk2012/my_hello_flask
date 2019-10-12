@@ -1,4 +1,5 @@
 import contextlib
+import os
 import pathlib
 import sys
 
@@ -34,10 +35,12 @@ def test_config(app):
     assert app.secret_key == "12345"
     assert app.root_path == "/Users/thomas_young/Documents/projects/my_hello_flask/demos/form"
     assert app.config["WTF_CSRF_ENABLED"]  # 本文件中后续用例要求设置CSRF生效
-    assert not app.config["WTF_I18N_ENABLED"]
-    assert app.root_path == "/Users/thomas_young/Documents/projects/my_hello_flask/demos/form"
+    assert not app.config["WTF_I18N_ENABLED"]  # 这样设置后, WTF将可以支持中文提示
     with app.app_context():
         assert current_app.root_path == app.root_path
+        assert os.path.isabs(current_app.config['UPLOAD_PATH'])
+        assert 'jpg' in current_app.config['ALLOWED_EXTENSIONS']
+        assert 'jpp' not in current_app.config['ALLOWED_EXTENSIONS']
 
 
 class TestWTForms:

@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import BooleanField, StringField, PasswordField, SubmitField
+from wtforms import BooleanField, StringField, PasswordField, SubmitField, MultipleFileField
 from wtforms.validators import DataRequired, Length
 
 
@@ -15,10 +15,15 @@ class LoginForm(MyBaseForm):
     password = PasswordField("Password", validators=[DataRequired(), Length(8, 20)])
     remember = BooleanField("Remember me")
     submit = SubmitField("Log in")
-    
+
 
 class UploadForm(MyBaseForm):
-    photo = FileField("Upload Image", validators=[FileRequired(),
+    photo = FileField("Upload Image", validators=[FileRequired("请上传图片"),
                                                   FileAllowed(["jpg", "jpeg", "png", "gif"])])
     submit = SubmitField()
 
+
+class MultiUploadForm(MyBaseForm):
+    # 注: photo=MultipleFileField是WTF原生字段, 因此不支持flask的FileAllowed功能
+    photo = MultipleFileField("Upload Images", validators=[DataRequired(message="请上传图片们")])
+    submit = SubmitField()
