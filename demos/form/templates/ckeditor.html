@@ -1,12 +1,26 @@
 {% extends 'base.html' %}
+{% from 'macros.html' import form_field %}
 
-{% block title %}Images{% endblock %}
 
-{% block bootstrap %}
-    <script src="url_for('static', filename='ckeditor/ckeditor.js')"></script>
+{% block title %}CKEditor{% endblock %}
+
+{% block styles %}
+    <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
 {% endblock %}
 
 {% block content %}
+<h1>CKEditor</h1>
+<form method="post">
+    {{ form.csrf_token }}
+    {{ form_field(form.title) }}
+    <br>
+    {{ form_field(form.body) }}
+    <br>
+    {{ form.submit }}
+</form>
 
+{% endblock %}
 
+{% block scripts %}
+    {{ ckeditor.config(name="body") }}
 {% endblock %}

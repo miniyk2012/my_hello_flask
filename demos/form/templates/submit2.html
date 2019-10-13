@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+
+{% from 'macros.html' import form_field %}
+
+{% block title %}TwoSubmit{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <h1 class="display-4">TwoSubmit Form</h1>
+    <hr>
+    <form method="post">
+        {{ form.csrf_token }}
+        {{ form_field(form.title) }}
+        <br>
+        {{ form_field(form.body) }}
+        <br>
+        {{ form.save(class="btn btn-primary") }}
+        {{ form.publish(class="btn btn-primary") }}
+    </form>
+</div>
+{% endblock %}

@@ -1,6 +1,7 @@
+from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import BooleanField, StringField, PasswordField, SubmitField, MultipleFileField
+from wtforms import BooleanField, StringField, PasswordField, SubmitField, MultipleFileField, TextAreaField
 from wtforms.validators import DataRequired, Length
 
 
@@ -27,3 +28,18 @@ class MultiUploadForm(MyBaseForm):
     # 注: photo=MultipleFileField是WTF原生字段, 因此不支持flask的FileAllowed功能
     photo = MultipleFileField("Upload Images", validators=[DataRequired(message="请上传图片们")])
     submit = SubmitField()
+
+
+# Ckeditor
+class RichTextForm(MyBaseForm):
+    title = StringField("Title", validators=[DataRequired(), Length(1, 50)])
+    body = CKEditorField("Body", validators=[DataRequired()])
+    submit = SubmitField("Publish")
+
+
+# multiple submit button
+class NewPostForm(MyBaseForm):
+    title = StringField('Title', validators=[DataRequired(), Length(1, 50)])
+    body = TextAreaField('Body', validators=[DataRequired()])
+    save = SubmitField('Save')
+    publish = SubmitField('Publish')

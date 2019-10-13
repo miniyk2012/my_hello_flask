@@ -5,7 +5,7 @@ from flask import (render_template, request, flash, redirect, url_for, current_a
                    session, send_from_directory)
 from loguru import logger
 
-from forms import LoginForm, UploadForm, MultiUploadForm
+from forms import LoginForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm
 from utils import use_services
 
 
@@ -115,6 +115,28 @@ def multi_upload():
     return render_template("upload.html", form=form, filenames=request.args.getlist("filenames"),
                            title="MultiUpload Form")
 
+# 集成ckeditor
+def integrate_ckeditor():
+    form = RichTextForm()
+    if form.validate_on_submit():
+        title = form.title.data
+        body = form.body.data
+        flash('Your post is published!')
+        return render_template('post.html', title=title, body=body)
+    return render_template('ckeditor.html', form=form)
+
+
+# 2个提交按钮的判断
+def submit2():
+    form = NewPostForm()
+    if form.validate_on_submit():
+        if form.save.data:
+            flash("save submit")
+        elif form.publish.data:
+            flash("publish submit")
+        return redirect(url_for("index"))
+    return render_template("submit2.html", form=form)
+
 
 rules = [
     {'rule': '/', 'view_func': index, 'methods': ['GET', 'POST']},
@@ -127,6 +149,8 @@ rules = [
     {'rule': '/uploaded-images', 'view_func': show_images},
     {'rule': '/uploads/<path:filename>', 'view_func': get_file},
     {'rule': '/multi-upload', 'view_func': multi_upload, 'methods': ['GET', 'POST']},
+    {'rule': '/ckeditor', 'view_func': integrate_ckeditor, 'methods': ['GET', 'POST']},
+    {'rule': '/submit2', 'view_func': submit2, 'methods': ['GET', 'POST']},
 
 ]
 
