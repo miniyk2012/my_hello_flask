@@ -1,8 +1,10 @@
 from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import BooleanField, StringField, PasswordField, SubmitField, MultipleFileField, TextAreaField
-from wtforms.validators import DataRequired, Length
+from wtforms import (BooleanField, StringField, PasswordField,
+                     SubmitField, MultipleFileField, TextAreaField
+                     )
+from wtforms.validators import DataRequired, Length, Email
 
 
 class MyBaseForm(FlaskForm):
@@ -43,3 +45,27 @@ class NewPostForm(MyBaseForm):
     body = TextAreaField('Body', validators=[DataRequired()])
     save = SubmitField('Save')
     publish = SubmitField('Publish')
+
+
+class SigninForm(MyBaseForm):
+    username = StringField('Username', validators=[DataRequired(), Length(1, 50)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(6, 20)])
+    submit1 = SubmitField()
+
+
+class RegisterForm(MyBaseForm):
+    username = StringField('Username', validators=[DataRequired(), Length(1, 50)])
+    email = StringField('Email', validators=[DataRequired(), Email(message="邮箱格式错误"), Length(5, 100)])
+    submit2 = SubmitField()
+
+
+class SigninForm2(MyBaseForm):
+    username = StringField('Username', validators=[DataRequired(), Length(1, 50)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(6, 20)])
+    submit = SubmitField()
+
+
+class RegisterForm2(MyBaseForm):
+    username = StringField('Username', validators=[DataRequired(), Length(1, 50)])
+    email = StringField('Email', validators=[DataRequired(), Email(message="邮箱格式错误"), Length(5, 100)])
+    submit = SubmitField()

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+
+{% from 'macros.html' import form_field_by_session %}
+{% block title %}2Form 2View{% endblock %}
+
+{% block content %}
+{{ session.errors }}
+<div class="container">
+    <h1 class="display-4">SignIn Form</h1>
+    <hr>
+    <form method="post" action="{{ url_for('handle_sign') }}">
+        {{ signin_form.csrf_token }}
+        <div class="form-group">
+            {{ form_field_by_session(signin_form.username, class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_field_by_session(signin_form.password, class="form-control") }}
+        </div>
+        {{ signin_form.submit(class="btn btn-primary") }}
+    </form>
+
+    <hr>
+    <h1 class="display-4">Register Form</h1>
+    <form method="post" action="{{ url_for('handle_register') }}">
+        {{ register_form.csrf_token }}
+        <div class="form-group">
+            {{ form_field_by_session(register_form.username, class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_field_by_session(register_form.email, class="form-control") }}
+        </div>
+        {{ register_form.submit(class="btn btn-primary") }}
+    </form>
+</div>
+{% endblock %}

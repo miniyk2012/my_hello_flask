@@ -5,8 +5,9 @@ from flask import (render_template, request, flash, redirect, url_for, current_a
                    session, send_from_directory)
 from loguru import logger
 
-from forms import LoginForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm
-from utils import use_services
+from forms import (LoginForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm,
+                   SigninForm, RegisterForm, SigninForm2, RegisterForm2)
+from utils import use_services, clear_form
 
 
 class Service1:
@@ -115,6 +116,7 @@ def multi_upload():
     return render_template("upload.html", form=form, filenames=request.args.getlist("filenames"),
                            title="MultiUpload Form")
 
+
 # 集成ckeditor
 def integrate_ckeditor():
     form = RichTextForm()
@@ -138,6 +140,62 @@ def submit2():
     return render_template("submit2.html", form=form)
 
 
+def two_form():
+    signin_form = SigninForm()
+    register_form = RegisterForm()
+    # 这2个form都会被选初始化(只要提交请求里面有与Form相同名称的字段)
+    logger.info(f"SigninForm = {signin_form.data}")
+    logger.info(f"RegisterForm = {register_form.data}")
+
+    if signin_form.submit1.data and signin_form.validate():
+        flash(f'SigninForm submit, username={signin_form.username.data}, password={signin_form.password.data}')
+        return redirect(url_for("index"))
+    elif register_form.submit2.data and register_form.validate():
+        flash(f'RegisterForm submit, username={register_form.username.data}, email={register_form.email.data}')
+        return redirect(url_for("index"))
+    clear_form(signin_form, register_form)
+    return render_template("2form.html", signin_form=signin_form, register_form=register_form)
+
+
+# 只是用来显示form表单, 不用来提交
+def multi_form_multi_view():
+    signin_form = SigninForm2()
+    register_form = RegisterForm2()
+    return render_template("2form_2view.html", signin_form=signin_form, register_form=register_form)
+
+
+def handle_sign():
+    signin_form = SigninForm2()
+    register_form = RegisterForm2()
+    # 这2个form都会被选初始化(只要提交请求里面有与Form相同名称的字段)
+    logger.info(f"SigninForm = {signin_form.data}")
+    logger.info(f"RegisterForm = {register_form.data}")
+
+    clear_form(register_form)
+    if signin_form.validate_on_submit():
+        flash(f'SigninForm submit, username={signin_form.username.data}, password={signin_form.password.data}')
+        return redirect(url_for("index"))
+    # 使用session传递报错信息
+    session['errors'] = signin_form.errors
+    return render_template("2form_2view_session.html", signin_form=signin_form, register_form=register_form)
+
+
+def handle_register():
+    signin_form = SigninForm2()
+    register_form = RegisterForm2()
+    # 这2个form都会被选初始化(只要提交请求里面有与Form相同名称的字段)
+    logger.info(f"SigninForm = {signin_form.data}")
+    logger.info(f"RegisterForm = {register_form.data}")
+
+    clear_form(signin_form)
+    if register_form.validate_on_submit():
+        flash(f'RegisterForm submit, username={register_form.username.data}, email={register_form.email.data}')
+        return redirect(url_for("index"))
+
+    # 使用field.errors的提交传递报错信息
+    return render_template("2form_2view.html", signin_form=signin_form, register_form=register_form)
+
+
 rules = [
     {'rule': '/', 'view_func': index, 'methods': ['GET', 'POST']},
     {'rule': '/html', 'view_func': html, 'methods': ['GET', 'POST']},
@@ -151,7 +209,10 @@ rules = [
     {'rule': '/multi-upload', 'view_func': multi_upload, 'methods': ['GET', 'POST']},
     {'rule': '/ckeditor', 'view_func': integrate_ckeditor, 'methods': ['GET', 'POST']},
     {'rule': '/submit2', 'view_func': submit2, 'methods': ['GET', 'POST']},
-
+    {'rule': '/two-form', 'view_func': two_form, 'methods': ['GET', 'POST']},
+    {'rule': '/multi-form-multi-view', 'view_func': multi_form_multi_view},
+    {'rule': '/handle-signin', 'view_func': handle_sign, 'methods': ['POST']},
+    {'rule': '/handle-register', 'view_func': handle_register, 'methods': ['POST']},
 ]
 
 

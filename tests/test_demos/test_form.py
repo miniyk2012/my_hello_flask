@@ -63,6 +63,9 @@ class TestWTForms:
 
     def test_login_form(self, app, _login_form_clz):
         with self.build_form(app, _login_form_clz) as form:
+            assert form.username.name == "username"
+            assert form.username.label.text == "Username"
+
             assert form.username() == '''<input id="username" name="username" placeholder="Your name" required type="text" value="">'''
             assert form.username.label() == '''<label for="username">Username</label>'''
 
@@ -70,7 +73,6 @@ class TestWTForms:
             assert form.password.label() == '''<label for="password">Password</label>'''
 
             self.expect_data(form)
-
             # logger.info(form.remember())
             # logger.info(form.remember.label())
             #
@@ -84,7 +86,8 @@ class TestWTForms:
         with self.build_form(app, _login_form_clz, username='', password='123') as form:
             assert form.password.data == "123"
             assert not form.validate()
-            logger.info(form.errors)
+            assert form.password.errors == ['Field must be between 8 and 128 characters long.']
+            assert form.username.errors == ['This field is required.']
             assert form.errors["password"] == ['Field must be between 8 and 128 characters long.']
 
         with self.build_form(app, _login_form_clz, username='杨恺', password='12345678') as form:
@@ -111,7 +114,6 @@ class TestFlaskWTF(TestWTForms):
         request_ctx.pop()
 
     def expect_data(self, form):
-        logger.info(form.data)
         assert form.data == {'username': None, 'password': None, 'remember': True, 'submit': False, 'csrf_token': None}
 
     def validate_csrf_token(self, form):

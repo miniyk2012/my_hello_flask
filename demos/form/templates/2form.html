@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+
+{% from 'macros.html' import form_field %}
+{% block title %}Tow Form{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="display-4">SignIn Form</h1>
+    <hr>
+    <form method="post">
+        {{ signin_form.csrf_token }}
+        <div class="form-group">
+            {{ form_field(signin_form.username, class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_field(signin_form.password, class="form-control") }}
+        </div>
+        {{ signin_form.submit1(class="btn btn-primary") }}
+    </form>
+
+    <hr>
+    <h1 class="display-4">Register Form</h1>
+    <form method="post">
+        {{ register_form.csrf_token }}
+        <div class="form-group">
+            {{ form_field(register_form.username, class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_field(register_form.email, class="form-control") }}
+        </div>
+        {{ register_form.submit2(class="btn btn-primary") }}
+    </form>
+</div>
+{% endblock %}

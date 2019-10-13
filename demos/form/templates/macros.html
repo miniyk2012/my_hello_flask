@@ -18,7 +18,20 @@
     {{ field(**kwargs) }}
     {% if field.errors -%}
         {% for error in field.errors -%}
-            <small class="error">{{ error }}</small>
+            <small class="error">{{ error }}</small>&nbsp;
+        {%- endfor %}
+    {%- endif %}
+{% endmacro %}
+
+
+{% macro form_field_by_session(field) %}
+    {{ field.label }}
+    {# https://stackoverflow.com/questions/13944751/args-kwargs-in-jinja2-macros,
+        kwargs用来接收关键字参数, 但不允许在宏入口参数处声明 #}
+    {{ field(**kwargs) }}
+    {% if session.errors[field.name] -%}
+        {% for error in session.errors[field.name] -%}
+            <small class="error">{{ error }}</small>&nbsp;
         {%- endfor %}
     {%- endif %}
 {% endmacro %}
