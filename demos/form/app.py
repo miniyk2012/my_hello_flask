@@ -2,8 +2,9 @@ import os
 
 from flask import Flask
 from flask_ckeditor import CKEditor
-from loguru import logger
 from flask_dropzone import Dropzone
+from flask_session import Session
+from loguru import logger
 
 import config
 from views import add_routes
@@ -26,15 +27,16 @@ def _config_jinja(app):
 def _init_plugins(app):
     CKEditor(app)
     Dropzone(app)
+    Session(app)
 
 
 def create_app():
     _config_log()
     app = Flask(__name__)
-    
+
     app.config.from_object(config)
     app.context_processor(_inject_variables)
-    
+
     _init_plugins(app)
     add_routes(app)
     _config_jinja(app)

@@ -15,3 +15,6 @@ DROPZONE_MAX_FILE_SIZE = 30  # 最大30M
 DROPZONE_MAX_FILES = 1000
 DROPZONE_REDIRECT_VIEW = "show_images"
 
+# Flask-Session的配置
+# SESSION_TYPE = 'filesystem'  # 存储在文件中[文件默认在working directory的flask_session下]
+SESSION_TYPE = 'redis'  # 默认连'127.0.0.1:6379'

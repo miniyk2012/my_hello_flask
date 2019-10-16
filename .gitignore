@@ -2,5 +2,7 @@ venv
 .env
 .idea
 **/logs
-**/uploads
-demos/form/static/ckeditor
+demos/form/uploads/*
+!demos/form/uploads/.gitkeep
+demos/form/flask_session/*
+!demos/form/flask_session/.gitkeep

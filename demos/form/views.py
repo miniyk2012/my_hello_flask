@@ -79,7 +79,7 @@ def upload():
 
 def show_images():
     @after_this_request
-    def remember_language(response):
+    def del_filenames(response):
         # 图片查看完就清掉
         if 'filenames' in session:
             session.pop('filenames')
@@ -220,10 +220,15 @@ def dropzone_upload():
             # flask的原生session是保存在客户端的, 当同一个客户几乎同时发起多张图片的上传请求时, 每次请求所带的session信息都是初始值,
             # 服务器端每次接收到的session['filenames']是互相独立的, 会被分别更新然后返回给客户端
             # 而客户端的cookie会被最后一次的返回值覆盖, 因此只要客户端的请求不是一个完成后再发起下一个, 就会存在竞态条件
-            # 因此session是存在竞态条件, 解决方案是把数据存储在服务器端(并打上该客户的标识, 这个客户标识可以存在session中),
+            # 因此session存在竞态条件, 解决方案是把数据存储在服务器端的数据库里(打上该客户的标识用于区分是哪个客户,
+            # 这个客户标识可以存在session中)
+            # 使用服务器端session也无法避免竞态条件(Flask-Session, 无论是存在filesystem里还是redis里).
             # 总之对于需要频繁更新的值, 就不应该存在session中(至少是客户端session中), session应该只用来存储某个客户标识
-
-            session.setdefault('filenames', []).append(filename)
+            logger.info(f'session is {session}')
+            # session.setdefault('filenames', []).append(filename)
+            filenames = session.get('filenames', [])
+            filenames.append(filename)
+            session['filenames'] = filenames
             # 每次请求的filenames不同(容易理解: 该值来自不同的请求, 每次请求肯定不一样),
             # session是同一个对象(不同客户端的请求都是同一个对象, 但是不同客户端里面的值filenames不同哟)
             warnings.warn(f'filenames\'id={id(session.get("filenames"))}, session\'id={id(session)}')
