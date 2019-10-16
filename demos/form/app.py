@@ -3,6 +3,7 @@ import os
 from flask import Flask
 from flask_ckeditor import CKEditor
 from loguru import logger
+from flask_dropzone import Dropzone
 
 import config
 from views import add_routes
@@ -24,6 +25,7 @@ def _config_jinja(app):
 
 def _init_plugins(app):
     CKEditor(app)
+    Dropzone(app)
 
 
 def create_app():

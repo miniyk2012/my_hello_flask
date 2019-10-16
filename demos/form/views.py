@@ -1,8 +1,9 @@
 import os
 import uuid
+import warnings
 
 from flask import (render_template, request, flash, redirect, url_for, current_app,
-                   session, send_from_directory)
+                   session, send_from_directory, after_this_request)
 from loguru import logger
 
 from forms import (LoginForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm,
@@ -77,6 +78,13 @@ def upload():
 
 
 def show_images():
+    @after_this_request
+    def remember_language(response):
+        # 图片查看完就清掉
+        if 'filenames' in session:
+            session.pop('filenames')
+        return response
+
     return render_template('uploaded.html')
 
 
@@ -196,6 +204,36 @@ def handle_register():
     return render_template("2form_2view.html", signin_form=signin_form, register_form=register_form)
 
 
+# dropzone上传文件, 每上传一张图片就会用ajax发起一次请求
+def dropzone_upload():
+    if request.method == 'POST':  # dropzone通过ajax上传时, 会调用该方法
+        if 'file' not in request.files:
+            return 'This field is required.', 400  # 返回给dropzone的ajax请求的响应, 400的话dropzone会认为失败了
+        f = request.files.get('file')
+        if f and allowed_file(f.filename):
+            filename = random_filename(f.filename)
+            f.save(os.path.join(
+                current_app.config['UPLOAD_PATH'], filename
+            ))
+
+            # https://stackoverflow.com/questions/48387783/behaviour-when-multiple-requests-modify-the-session-in-flask
+            # flask的原生session是保存在客户端的, 当同一个客户几乎同时发起多张图片的上传请求时, 每次请求所带的session信息都是初始值,
+            # 服务器端每次接收到的session['filenames']是互相独立的, 会被分别更新然后返回给客户端
+            # 而客户端的cookie会被最后一次的返回值覆盖, 因此只要客户端的请求不是一个完成后再发起下一个, 就会存在竞态条件
+            # 因此session是存在竞态条件, 解决方案是把数据存储在服务器端(并打上该客户的标识, 这个客户标识可以存在session中),
+            # 总之对于需要频繁更新的值, 就不应该存在session中(至少是客户端session中), session应该只用来存储某个客户标识
+
+            session.setdefault('filenames', []).append(filename)
+            # 每次请求的filenames不同(容易理解: 该值来自不同的请求, 每次请求肯定不一样),
+            # session是同一个对象(不同客户端的请求都是同一个对象, 但是不同客户端里面的值filenames不同哟)
+            warnings.warn(f'filenames\'id={id(session.get("filenames"))}, session\'id={id(session)}')
+
+            return 'Success', 200  # 返回给dropzone的ajax请求的响应, 200的话dropzone会认为成功了
+        else:
+            return 'Invalid file type.', 400
+    return render_template('dropzone.html')
+
+
 rules = [
     {'rule': '/', 'view_func': index, 'methods': ['GET', 'POST']},
     {'rule': '/html', 'view_func': html, 'methods': ['GET', 'POST']},
@@ -213,6 +251,7 @@ rules = [
     {'rule': '/multi-form-multi-view', 'view_func': multi_form_multi_view},
     {'rule': '/handle-signin', 'view_func': handle_sign, 'methods': ['POST']},
     {'rule': '/handle-register', 'view_func': handle_register, 'methods': ['POST']},
+    {'rule': '/dropzone-upload', 'view_func': dropzone_upload, 'methods': ['GET', 'POST']},
 ]
 
 
