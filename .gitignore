@@ -1,8 +1,7 @@
 venv
 .env
 .idea
-**/logs
+**/logs/*
 demos/form/uploads/*
-!demos/form/uploads/.gitkeep
 demos/form/flask_session/*
-!demos/form/flask_session/.gitkeep
+!**/.gitkeep
