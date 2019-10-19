@@ -5,3 +5,4 @@ venv
 demos/form/uploads/*
 demos/form/flask_session/*
 !**/.gitkeep
+demos/database/data.db

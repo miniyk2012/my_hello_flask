@@ -1,8 +1,16 @@
+import os
+import sys
+from pathlib import Path
+
+import click
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from loguru import logger
 
-from demos.database import config
+HERE = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(str(Path(__file__).parents[2]))
+
+from demos.database import config, cmds
 
 db = SQLAlchemy()
 
@@ -17,6 +25,13 @@ def _config_jinja(app):
 
 
 def _init_plugins(app):
+    # SQLite URI compatible
+    WIN = sys.platform.startswith('win')
+    if WIN:
+        prefix = 'sqlite:///'
+    else:
+        prefix = 'sqlite:////'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', prefix + os.path.join(app.root_path, 'data.db'))
     db.init_app(app)
 
 
@@ -27,3 +42,11 @@ def create_app():
     app.config.from_object(config)
 
     _init_plugins(app)
+    cmds.register(app)
+
+    return app
+
+
+from demos.database import models  # 不能删除
+
+

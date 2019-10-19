@@ -7,9 +7,9 @@ from flask import (render_template, request, flash, redirect, url_for, current_a
 from flask_ckeditor import upload_fail, upload_success
 from loguru import logger
 
-from forms import (LoginForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm,
+from demos.form.forms import (LoginForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm,
                    SigninForm, RegisterForm, SigninForm2, RegisterForm2)
-from utils import use_services, clear_form
+from demos.form.utils import use_services, clear_form
 
 
 class Service1:

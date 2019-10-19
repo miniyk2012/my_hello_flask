@@ -8,7 +8,6 @@ sys.path.append(str(pathlib.Path(__file__).parents[2] / pathlib.Path('demos') / 
 import pytest
 from flask_wtf import FlaskForm
 from flask import current_app
-from loguru import logger
 from wtforms import Form, BooleanField, StringField, validators, PasswordField, SubmitField
 
 from demos.form.app import create_app

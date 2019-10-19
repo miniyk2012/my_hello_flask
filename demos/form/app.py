@@ -1,4 +1,5 @@
-import os
+import os, sys
+from pathlib import Path
 
 from flask import Flask
 from flask_ckeditor import CKEditor
@@ -6,8 +7,11 @@ from flask_dropzone import Dropzone
 from flask_session import Session
 from loguru import logger
 
-import config
-from views import add_routes
+HERE = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(str(Path(__file__).parents[2]))
+
+from demos.form import config
+from demos.form.views import add_routes
 
 
 def _config_log():
