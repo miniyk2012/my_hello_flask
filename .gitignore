@@ -6,3 +6,4 @@ demos/form/uploads/*
 demos/form/flask_session/*
 !**/.gitkeep
 demos/database/data.db
+tests/test_demos/testdata.db
