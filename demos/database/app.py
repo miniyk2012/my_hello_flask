@@ -9,7 +9,7 @@ from loguru import logger
 HERE = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(str(Path(__file__).parents[2]))
 
-from demos.database import config, cmds
+from demos.database import config, cmds, views
 
 db = SQLAlchemy()
 
@@ -42,7 +42,7 @@ def create_app():
 
     _init_plugins(app)
     cmds.register(app)
-
+    views.register(app)
     return app
 
 

@@ -116,3 +116,13 @@ def test_delete(db):
     db.session.commit()
 
     assert Note.query.filter(and_(Note.id < 100, Note.id >= 50)).count() == 49
+
+
+def test_multi_request(client):
+    """测试用例中, flask代码是使用主线程的, 并不会每个请求都起一个线程"""
+    response = client.get('/set-threadlocal/a')
+    assert response.data == b'a'
+    for _ in range(10):
+        response = client.get('/get-threadlocal')
+        assert response.data == b'a'
+
