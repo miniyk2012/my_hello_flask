@@ -5,6 +5,9 @@ from flask import Response, current_app, request, url_for
 from loguru import logger
 
 from demos.http.http_app import create_app
+from utils import here
+
+HERE = here(__name__)
 
 
 @pytest.fixture(scope='session')
@@ -23,6 +26,8 @@ class TestHttp:
     def test_config(self, app, client):
         assert app.config['ENV'] == 'development'
         assert os.getenv("SECRET_KEY") == '123456'
+        # app.root_path == /path/to/my_hello_flask/demos/http
+        assert app.root_path == os.path.join(os.path.dirname(os.path.dirname(HERE)), "demos", "http")
 
     def test_context(self, app, client):
         response = client.get('/currentapp')

@@ -4,6 +4,7 @@ import warnings
 
 from flask import (render_template, request, flash, redirect, url_for, current_app,
                    session, send_from_directory, after_this_request)
+from flask_ckeditor import upload_fail, upload_success
 from loguru import logger
 
 from forms import (LoginForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm,
@@ -239,6 +240,16 @@ def dropzone_upload():
     return render_template('dropzone.html')
 
 
+def upload_for_ckeditor():
+
+    f = request.files.get('upload')
+    if not allowed_file(f.filename):
+        return upload_fail('只能上传图片!')
+    f.save(os.path.join(current_app.config['UPLOAD_PATH'], f.filename))
+    url = url_for('get_file', filename=f.filename)
+    return upload_success(url, f.filename)  # 文件上传后提供预览
+
+
 rules = [
     {'rule': '/', 'view_func': index, 'methods': ['GET', 'POST']},
     {'rule': '/html', 'view_func': html, 'methods': ['GET', 'POST']},
@@ -257,6 +268,7 @@ rules = [
     {'rule': '/handle-signin', 'view_func': handle_sign, 'methods': ['POST']},
     {'rule': '/handle-register', 'view_func': handle_register, 'methods': ['POST']},
     {'rule': '/dropzone-upload', 'view_func': dropzone_upload, 'methods': ['GET', 'POST']},
+    {'rule': '/upload-ck', 'view_func': upload_for_ckeditor, 'methods': ['POST']},
 ]
 
 
