@@ -2,7 +2,6 @@ import os
 import sys
 from pathlib import Path
 
-import click
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from loguru import logger
