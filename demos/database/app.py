@@ -7,7 +7,9 @@ from flask_sqlalchemy import SQLAlchemy
 from loguru import logger
 
 HERE = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(str(Path(__file__).parents[2]))
+PROJECT_DIR = str(Path(__file__).parents[2])
+if PROJECT_DIR not in sys.path:
+    sys.path.append(PROJECT_DIR)
 
 from demos.database import config, cmds, views
 

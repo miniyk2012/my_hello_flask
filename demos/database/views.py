@@ -1,3 +1,4 @@
+import os
 import threading
 
 from loguru import logger
@@ -15,11 +16,16 @@ def register(app):
 
     @app.route('/set-threadlocal/<val>')
     def set_threadlocal(val):
+        logger.info(threading.activeCount())
         thread_local.val = val
-        logger.info('set val={}, {}'.format(get_val(thread_local), threading.currentThread().name))
+        logger.info('set val={}, thread_id={}, threadname={}, pid={}'
+                    .format(get_val(thread_local), threading.currentThread().ident, threading.currentThread().name,
+                            os.getpid()))
         return get_val(thread_local)
 
     @app.route('/get-threadlocal')
     def get_threadlocal():
-        logger.info('get val={}, {}'.format(get_val(thread_local), threading.currentThread().name))
+        logger.info(threading.activeCount())
+        logger.info('get val={}, thread_id={}, threadname={}, pid={}'
+                    .format(get_val(thread_local), threading.currentThread().ident, threading.currentThread().name, os.getpid()))
         return get_val(thread_local) or 'failure'
