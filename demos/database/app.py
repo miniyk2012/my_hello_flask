@@ -11,7 +11,7 @@ PROJECT_DIR = str(Path(__file__).parents[2])
 if PROJECT_DIR not in sys.path:
     sys.path.append(PROJECT_DIR)
 
-from demos.database import config, cmds, views
+
 
 db = SQLAlchemy()
 
@@ -26,17 +26,19 @@ def _config_jinja(app):
 
 
 def _init_plugins(app):
-    # SQLite URI compatible
+    # SQLite URI compatible, database URL
     WIN = sys.platform.startswith('win')
     if WIN:
         prefix = 'sqlite:///'
     else:
         prefix = 'sqlite:////'
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', prefix + os.path.join(app.root_path, 'data.db'))
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', prefix + os.path.join(app.root_path, 'data.db'))  # 绝对路径
     db.init_app(app)
 
 
 def create_app():
+    from demos.database import config, cmds, views
+
     _config_log()
 
     app = Flask(__name__)
@@ -44,7 +46,7 @@ def create_app():
 
     _init_plugins(app)
     cmds.register(app)
-    views.register(app)
+    views.register_views(app)
     return app
 
 

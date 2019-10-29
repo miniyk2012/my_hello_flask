@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine('sqlite:///testdata.db', echo=True)
+engine = create_engine('sqlite:///testdata.db', echo=True)  # 相对路径
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 
@@ -38,3 +38,9 @@ def prepare_data():
 def test_query(prepare_data):
     session = Session()
     logger.info(session.query(User).filter_by(name='yangkai').one())
+
+
+def test_func():
+    from sqlalchemy.sql import func
+    logger.info(func.now())
+    logger.info(type(func.now()))
