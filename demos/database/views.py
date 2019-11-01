@@ -16,7 +16,7 @@ def get_val(thread_local):
         return None
 
 
-def register_views(app):
+def register(app):
     thread_local = threading.local()
 
     @app.route('/set-threadlocal/<val>')

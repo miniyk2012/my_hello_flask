@@ -43,4 +43,5 @@ def test_query(prepare_data):
 def test_func():
     from sqlalchemy.sql import func
     logger.info(func.now())
+    logger.info(func.as_utc())
     logger.info(type(func.now()))

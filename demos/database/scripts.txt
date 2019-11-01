@@ -1,0 +1,53 @@
+flask initdb
+
+
+from flask import current_app
+db = current_app.extensions['sqlalchemy'].db
+
+
+
+-------------------
+db.drop_all()
+db.create_all()
+
+
+author = Author(name='yangkai', phone='122')
+ar1 = Article(title='a', body='aaa')
+ar2 = Article(title='b', body='bbb')
+db.session.add(author)
+db.session.add(ar1)
+db.session.add(ar2)
+
+ar1.author_id=1
+ar2.author_id=1
+author.articles
+
+db.session.commit()
+
+author=Author.query.one()
+ar1=Article.query.get(1)
+ar2=Article.query.get(2)
+
+
+book1=Book(title='book1')
+book2=Book(title='book2')
+
+writer=Writer(name='yang')
+book1.writer=writer
+writer.books
+
+db.session.add(b1)
+db.session.add(book2)
+db.session.add(writer)
+db.session.commit()
+
+writer=Writer.query.first()
+Book.query.all()
+book2.writer_id
+
+db.session.query(Writer).all()
+Writer.query.all()
+
+
+
+

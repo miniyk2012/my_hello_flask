@@ -11,8 +11,6 @@ PROJECT_DIR = str(Path(__file__).parents[2])
 if PROJECT_DIR not in sys.path:
     sys.path.append(PROJECT_DIR)
 
-
-
 db = SQLAlchemy()
 
 
@@ -32,7 +30,8 @@ def _init_plugins(app):
         prefix = 'sqlite:///'
     else:
         prefix = 'sqlite:////'
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', prefix + os.path.join(app.root_path, 'data.db'))  # 绝对路径
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL',
+                                                      prefix + os.path.join(app.root_path, 'data.db'))  # 绝对路径
     db.init_app(app)
 
 
@@ -46,10 +45,6 @@ def create_app():
 
     _init_plugins(app)
     cmds.register(app)
-    views.register_views(app)
+    views.register(app)
     return app
-
-
-from demos.database import models  # 不能删除
-
 

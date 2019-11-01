@@ -3,7 +3,8 @@ import click
 
 def register(app):
     from demos.database.app import db
-
+    from demos.database.models import (Note, Author, Article, Writer, Book,
+                                       Citizen, City)
     @app.cli.command()
     @click.option('--drop', is_flag=True, help='Create after drop.')
     def initdb(drop):
@@ -13,3 +14,15 @@ def register(app):
             db.drop_all()
         db.create_all()
         click.echo('wawa Initialized database.')
+
+    @app.cli.command()
+    def dropdb():
+        """drop the database."""
+        db.drop_all()
+        click.echo('database is dropped.')
+
+    @app.shell_context_processor
+    def make_shell_context():
+        """为flask-shell提供的可用变量"""
+        return dict(db=db, Note=Note, Author=Author, Article=Article, Writer=Writer,
+                    Book=Book, Citizen=Citizen, City=City)
