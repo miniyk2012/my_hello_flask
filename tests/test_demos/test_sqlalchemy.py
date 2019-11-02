@@ -23,6 +23,10 @@ class User(Base):
             self.name, self.fullname, self.nickname)
 
 
+class Student(Base):
+    id = Column(Integer, primary_key=True)
+
+
 Base.metadata.drop_all(engine)
 Base.metadata.create_all(engine)
 

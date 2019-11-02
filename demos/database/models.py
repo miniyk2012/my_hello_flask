@@ -77,3 +77,52 @@ class City(db.Model):
     # optional
     def __repr__(self):
         return f'City <id={self.id}, name={self.name}>'
+
+
+# one to one + bidirectional relationship
+class Country(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=True)
+    capital = db.relationship('Capital', uselist=False, back_populates='country')
+
+    # optional
+    def __repr__(self):
+        return f'Country <id={self.id}, name={self.name}, capital=[{self.capital}]>'
+
+
+class Capital(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=True)
+    country_id = db.Column(db.Integer, db.ForeignKey('country.id'))
+    country = db.relationship('Country', back_populates='capital')
+
+    # optional
+    def __repr__(self):
+        return f'Capital <id={self.id}, name={self.name}, country={self.country.name if self.country else None}>'
+
+
+# many to many + bidirectional relationship
+student_teacher_table = db.Table('student_teacher',
+                                 db.Column('student_id', db.Integer, db.ForeignKey('student.id')),
+                                 db.Column('teacher_id', db.Integer, db.ForeignKey('teacher.id'))
+                                 )
+
+
+class Student(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(70), unique=True)
+    grade = db.Column(db.String(20))
+    teachers = db.relationship('Teacher', secondary=student_teacher_table, back_populates='students')
+
+    def __repr__(self):
+        return f'Student <id={self.id}, name={self.name}>'
+
+
+class Teacher(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(70), unique=True)
+    office = db.Column(db.String(20))
+    students = db.relationship('Student', secondary=student_teacher_table, back_populates='teachers')
+
+    def __repr__(self):
+        return f'Teacher <id={self.id}, name={self.name}>'

@@ -14,6 +14,8 @@ db.create_all()
 author = Author(name='yangkai', phone='122')
 ar1 = Article(title='a', body='aaa')
 ar2 = Article(title='b', body='bbb')
+author.articles.append(ar1)
+author.articles.append(ar2)
 db.session.add(author)
 db.session.add(ar1)
 db.session.add(ar2)
@@ -48,6 +50,57 @@ book2.writer_id
 db.session.query(Writer).all()
 Writer.query.all()
 
+
+city = City(name='常州')
+man1 = Citizen(name='杨恺', city=city)
+man2 = Citizen(name='胡超', city=city)
+
+db.session.add_all([man1, man2])
+db.session.commit()
+
+db.session.delete(city)
+
+
+china = Country(name='中国')
+beijing = Capital(name='北京', country=china)
+db.session.add(beijing)
+db.session.commit()
+
+china = Country.query.one()
+beijing = Capital.query.one()
+
+china.capital=None
+
+db.session.rollback()
+
+# many to many
+# student_teacher_table是Table类型, 还没有和Modle做mapping, 要查询可以用下面的语句
+db.session.query(student_teacher_table).all()
+# student_teacher_table.c 是一个ImmutableColumnCollection
+db.session.query(student_teacher_table).filter(student_teacher_table.c.teacher_id==1).all()
+db.session.query(Teacher).all()
+
+
+t1 = Teacher(name='Bruce')
+t2 = Teacher(name='Sean')
+t3 = Teacher(name='Grey')
+t4 = Teacher(name='Jenny')
+s1 = Student(name='Mike')
+s2 = Student(name='David')
+s3 = Student(name='Kitty')
+s4 = Student(name='Peter')
+
+db.session.add_all([s1, s2, s3, s4, t1, t2, t3, t4])
+db.session.commit()
+
+s1.teachers = [t3, t4]
+s2.teachers = [t2]
+s3.teachers = [t4]
+
+t1.students
+t2.students
+t3.students
+t4.students
 
 
 
