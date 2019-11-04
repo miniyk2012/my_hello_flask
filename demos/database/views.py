@@ -4,7 +4,7 @@ import threading
 from flask import url_for, redirect, render_template, flash, abort
 from loguru import logger
 
-from demos.database.app import db
+from demos.database import db
 from demos.database.forms import NewNoteForm, EditNoteForm, DeleteNoteForm
 from demos.database.models import Note
 

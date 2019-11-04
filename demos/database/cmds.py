@@ -2,7 +2,7 @@ import click
 
 
 def register(app):
-    from demos.database.app import db
+    from demos.database import db
     from demos.database.models import (Note, Author, Article, Writer, Book,
                                        Citizen, City, Country, Capital, Student, Teacher, student_teacher_table)
     @app.cli.command()

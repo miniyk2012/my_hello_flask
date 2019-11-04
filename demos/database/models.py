@@ -1,12 +1,12 @@
-from datetime import datetime
+from sqlalchemy.sql import func
 
-from demos.database.app import db
+from demos.database import db
 
 
 class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text)
-    created_at = db.Column(db.DateTime(timezone=True), server_default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     # optional
     def __repr__(self):
