@@ -1,7 +1,7 @@
 import click
 
 from demos.database_migrate import app, db
-from demos.database_migrate.models import User, Post
+from demos.database_migrate.models import User, Post, Blog
 
 @app.cli.command()
 @click.option('--drop', is_flag=True, help='Create after drop.')
@@ -16,4 +16,4 @@ def initdb(drop):
 
 @app.shell_context_processor
 def make_shell_context():
-    return {'db': db, 'User': User, 'Post': Post}
+    return {'db': db, 'User': User, 'Post': Post, 'Blog': Blog}
