@@ -7,7 +7,7 @@ from sqlalchemy import and_
 from sqlalchemy.schema import Table, CreateTable
 
 from demos.database import create_app, db as sql_db
-from demos.database.models import Note, Post, Comment
+from demos.database.models import Note, Post, Comment, Draft
 
 NUM = 1000
 
@@ -150,3 +150,21 @@ def test_cascade(db):
     db.session.commit()
 
     assert comment2 not in db.session
+
+
+def test_listener(db):
+    draft = Draft(body='init')
+    db.session.add(draft)
+    db.session.commit()
+    assert draft.edit_time == 0
+    assert draft.body == 'init'
+
+    draft.body = 'first'
+    assert draft.edit_time == 1
+    assert draft.body == 'initfirst'
+
+    draft.body = 'second'
+    assert draft.edit_time == 2
+
+    assert draft.body == 'initfirstsecond'
+    db.session.commit()

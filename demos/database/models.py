@@ -141,3 +141,26 @@ class Comment(db.Model):
     body = db.Column(db.Text)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     post = db.relationship('Post', back_populates='comments')  # scalar
+
+
+# event listening
+class Draft(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    edit_time = db.Column(db.Integer, default=0)
+
+
+@db.event.listens_for(Draft.body, 'set')
+def increment_edit_time(target, value, oldvalue, initiator):
+    print('old_value', oldvalue, 'new_value', value, initiator)
+    if target.edit_time is not None:
+        target.edit_time += 1
+
+
+def add_prefix(target, value, oldvalue, initiator):
+    if isinstance(oldvalue, str):
+        return oldvalue + value
+    return value
+
+
+db.event.listen(Draft.body, 'set', add_prefix, retval=True)

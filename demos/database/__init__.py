@@ -57,4 +57,6 @@ def create_app(test=False):
 
     cmds.register(app)
     views.register(app)
+
+
     return app
