@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 
-engine = create_engine('sqlite:///testdata.db', echo=False)  # 相对路径
+engine = create_engine('sqlite:///testalchemy.db', echo=False)  # 相对路径
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 
