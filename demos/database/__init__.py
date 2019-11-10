@@ -1,7 +1,7 @@
 import os
+import sys
 from pathlib import Path
 
-import sys
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -24,21 +24,28 @@ def _config_jinja(app):
     app.jinja_env.lstrip_blocks = True
 
 
-def _init_plugins(app):
-    # SQLite URI compatible, database URL
+def _init_plugins(app, test):
     WIN = sys.platform.startswith('win')
     if WIN:
         prefix = 'sqlite:///'
     else:
         prefix = 'sqlite:////'
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL',
-                                                      prefix + os.path.join(app.root_path, 'data.db'))  # 绝对路径
+    if not test:
+        # SQLite URI compatible, database URL
+
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL',
+                                                          prefix + os.path.join(app.root_path, 'data.db'))  # 绝对路径
+
+    else:
+
+        app.config['SQLALCHEMY_DATABASE_URI'] = prefix + os.path.join(PROJECT_DIR, 'tests', 'test_demos', 'testdata.db')
+        app.config['SQLALCHEMY_ECHO'] = False
     db.init_app(app)
 
     migrate = Migrate(app, db)
 
 
-def create_app():
+def create_app(test=False):
     from demos.database import config, cmds, views
 
     _config_log()
@@ -46,7 +53,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(config)
 
-    _init_plugins(app)
+    _init_plugins(app, test)
 
     cmds.register(app)
     views.register(app)

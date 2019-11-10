@@ -6,15 +6,15 @@ from loguru import logger
 from sqlalchemy import and_
 from sqlalchemy.schema import Table, CreateTable
 
-from demos.database.app import create_app, db as sql_db
-from demos.database.models import Note
+from demos.database import create_app, db as sql_db
+from demos.database.models import Note, Post, Comment
 
 NUM = 1000
 
 
 @pytest.fixture(scope='session')
 def app():
-    app = create_app()
+    app = create_app(test=True)
     return app
 
 
@@ -126,3 +126,27 @@ def test_multi_request(client):
         response = client.get('/get-threadlocal')
         assert response.data == b'a'
 
+
+def test_cascade(db):
+    post1 = Post()
+    comment1 = Comment()
+    comment2 = Comment()
+
+    db.session.add(post1)
+    post1.comments.append(comment1)
+    post1.comments.append(comment2)
+
+    assert comment1 in db.session
+    assert comment2 in db.session
+
+    post1.comments.remove(comment1)
+
+    assert comment1 not in db.session
+    assert comment2 in db.session
+
+    db.session.commit()
+
+    db.session.delete(post1)
+    db.session.commit()
+
+    assert comment2 not in db.session

@@ -126,3 +126,18 @@ class Teacher(db.Model):
 
     def __repr__(self):
         return f'Teacher <id={self.id}, name={self.name}>'
+
+
+# cascade
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50))
+    body = db.Column(db.Text)
+    comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')  # collection
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+    post = db.relationship('Post', back_populates='comments')  # scalar

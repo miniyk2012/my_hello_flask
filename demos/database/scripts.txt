@@ -103,4 +103,20 @@ t3.students
 t4.students
 
 
+post1 = Post()
+comment1 = Comment()
+comment2 = Comment()
+comment3 = Comment()
+
+db.session.add(post1)
+post1 in db.session
+comment1 in db.session
+
+Comment.query.all()
+Post.query.all()
+
+post1.comments.append(comment1)
+
+post1.comments.remove(comment1)
+comment1 in post1.comments
 
