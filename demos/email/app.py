@@ -55,6 +55,10 @@ def send_async_mail(subject, to, body):
     pass
 
 
+# send email with HTML body
+def send_subscribe_mail(subject, to, **kwargs):
+    pass
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = EmailForm()
@@ -77,3 +81,15 @@ def index():
     form.subject.data = 'Hello, World!'
     form.body.data = 'Across the Great Wall we can reach every corner in the world.'
     return render_template('index.html', form=form)
+
+
+@app.route('/subscribe', methods=['GET', 'POST'])
+def subscribe():
+    form = SubscribeForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        email = form.email.data
+        send_subscribe_mail('Subscribe Success!', email, name=name)
+        flash('Confirmation email have been sent! Check your inbox.')
+        return redirect(url_for('subscribe'))
+    return render_template('subscribe.html', form=form)
