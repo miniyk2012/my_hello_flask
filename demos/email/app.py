@@ -1,4 +1,5 @@
 import os
+from threading import Thread
 
 from flask import Flask, request, flash, render_template, url_for
 from flask_mail import Mail, Message
@@ -51,13 +52,26 @@ def send_api_mail(subject, to, body):
     pass
 
 
+# send email asynchronously
+def _send_async_mail(app, subject, to, body):
+    with app.app_context():
+        message = Message(subject, recipients=[to], body=body)  # 我发现这一步特别慢, 因此也搬到另一个线程里面来
+        mail.send(message)
+
+
 def send_async_mail(subject, to, body):
-    pass
+    thr = Thread(target=_send_async_mail, args=[app, subject, to, body])
+    thr.start()
+    return thr
 
 
 # send email with HTML body
 def send_subscribe_mail(subject, to, **kwargs):
-    pass
+    message = Message(subject, recipients=[to], sender='Flask Weekly <%s>' % os.getenv('MAIL_USERNAME'))
+    message.body = render_template('emails/subscribe.txt', **kwargs)
+    message.html = render_template('emails/subscribe.html', **kwargs)
+    mail.send(message)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -69,13 +83,12 @@ def index():
         if form.submit_smtp.data:
             send_smtp_mail(subject, to, body)
             method = request.form.get('submit_smtp')
-        elif form.submit_api.data:
+        elif form.submit_api.data:  # True or False
             send_api_mail(subject, to, body)
             method = request.form.get('submit_api')
         else:
             send_async_mail(subject, to, body)
             method = request.form.get('submit_async')
-
         flash('Email sent %s! Check your inbox.' % ' '.join(method.split()[1:]))
         return redirect(url_for('index'))
     form.subject.data = 'Hello, World!'
@@ -93,3 +106,9 @@ def subscribe():
         flash('Confirmation email have been sent! Check your inbox.')
         return redirect(url_for('subscribe'))
     return render_template('subscribe.html', form=form)
+
+
+@app.route('/unsubscribe')
+def unsubscribe():
+    flash('Want to unsubscribe? No way...')
+    return redirect(url_for('subscribe'))
